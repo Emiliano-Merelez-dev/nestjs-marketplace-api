@@ -8,6 +8,7 @@ import { Repository } from 'typeorm';
 import { Product } from './entities/product.entity';
 import { User } from 'src/auth/entities/user.entity';
 import { CreateProductDto } from './dto/create-product.dto';
+import { UpdateProductDto } from './dto/update-product.dto';
 
 @Injectable()
 export class ProductsService {
@@ -29,7 +30,7 @@ export class ProductsService {
         id: 'ea5ef178-41ce-4147-ae2c-c891497d8830',
       });
       const product = this.productRepository.create({
-        ...createProuductDto,
+        ...this.formatProductData(createProuductDto),
         user: user,
       });
 
@@ -45,5 +46,16 @@ export class ProductsService {
 
   private handleDBExceptions(error: any) {
     if (error.code === '23505') throw new BadRequestException(error.detail);
+  }
+
+  private formatProductData(dto: CreateProductDto | UpdateProductDto) {
+    const { gender, category, ...details } = dto;
+
+    return {
+      ...details,
+      // Solo mapeamos si el valor existe (útil para el UpdateDto)
+      ...(gender && { gender: Array.isArray(gender) ? gender : [gender] }),
+      ...(category && { category: { id: category } }),
+    };
   }
 }

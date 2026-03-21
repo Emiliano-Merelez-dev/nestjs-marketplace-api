@@ -1,4 +1,5 @@
 import {
+  IsIn,
   IsNumber,
   IsOptional,
   IsPositive,
@@ -23,4 +24,11 @@ export class CreateProductDto {
   @IsString()
   @IsOptional()
   slug?: string;
+
+  @IsString()
+  @IsIn(['men', 'women', 'kid', 'unisex'])
+  gender: string;
+
+  @IsString()
+  category: string;
 }
