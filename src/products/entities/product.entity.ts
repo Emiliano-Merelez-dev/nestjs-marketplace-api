@@ -1,5 +1,6 @@
 import { User } from 'src/auth/entities/user.entity';
 import { Category } from 'src/categories/entities/category.entity';
+import { Review } from 'src/reviews/entities/review.entity';
 import {
   BeforeInsert,
   BeforeUpdate,
@@ -7,6 +8,7 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -71,6 +73,9 @@ export class Product {
   @ManyToOne(() => Category, (category) => category.products, { eager: true })
   @JoinColumn({ name: 'category_id' }) // <--- CONECTA CON LA COLUMNA category_id
   category: Category;
+
+  @OneToMany(() => Review, (review) => review.product, { cascade: true })
+  reviews: Review[];
 
   @BeforeInsert()
   checkSlugInsert() {

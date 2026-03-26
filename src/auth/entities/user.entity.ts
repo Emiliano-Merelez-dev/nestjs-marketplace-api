@@ -1,4 +1,5 @@
 import { Product } from 'src/products/entities/product.entity';
+import { Review } from 'src/reviews/entities/review.entity';
 import {
   BeforeInsert,
   BeforeUpdate,
@@ -39,6 +40,9 @@ export class User {
 
   @OneToMany(() => Product, (product) => product.user)
   product: Product;
+
+  @OneToMany(() => Review, (review) => review.user, { cascade: true })
+  reviews: Review[];
 
   @BeforeInsert()
   checkFieldsBeforeInsert() {
