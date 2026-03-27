@@ -8,5 +8,7 @@ export class ReviewsController {
   constructor(private readonly reviewsService: ReviewsService) {}
 
   @Post()
-  create(@Body() createReviewDto: CreateReviewDto) {}
+  create(@Body() createReviewDto: CreateReviewDto) {
+    return this.reviewsService.create(createReviewDto);
+  }
 }
