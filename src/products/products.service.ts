@@ -26,7 +26,12 @@ export class ProductsService {
   ) {}
 
   async findAll() {
-    return this.productRepository.find({});
+    try {
+      const products = await this.productRepository.find({});
+      return products;
+    } catch (error) {
+      this.handleDBExceptions(error);
+    }
   }
 
   async create(createProuductDto: CreateProductDto) {
