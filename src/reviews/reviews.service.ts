@@ -1,4 +1,8 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Review } from './entities/review.entity';
 import { Repository } from 'typeorm';
@@ -28,6 +32,17 @@ export class ReviewsService {
       console.log(error);
 
       throw new InternalServerErrorException('Check logs');
+    }
+  }
+
+  async findAll() {
+    try {
+      const reviews = await this.reviewRepository.find({
+        relations: ['user', 'product'],
+      });
+      return reviews;
+    } catch (error) {
+      throw new BadRequestException(error);
     }
   }
 }
