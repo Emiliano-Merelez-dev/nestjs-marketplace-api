@@ -1,6 +1,15 @@
-import { Controller, Post, Body, Get, Param } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  Param,
+  Patch,
+  ParseUUIDPipe,
+} from '@nestjs/common';
 import { ReviewsService } from './reviews.service';
 import { CreateReviewDto } from './dto/create-review.dto';
+import { UpdateReviewDto } from './dto/update-review.dto';
 // import { UpdateReviewDto } from './dto/update-review.dto';
 
 @Controller('reviews')
@@ -20,5 +29,13 @@ export class ReviewsController {
   @Get(':term')
   findOne(@Param('term') term: string) {
     return this.reviewsService.findOne(term);
+  }
+
+  @Patch(':id')
+  update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateReviewDto: UpdateReviewDto,
+  ) {
+    return this.reviewsService.update(id, updateReviewDto);
   }
 }

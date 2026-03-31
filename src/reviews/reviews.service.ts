@@ -8,6 +8,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Review } from './entities/review.entity';
 import { Repository } from 'typeorm';
 import { CreateReviewDto } from './dto/create-review.dto';
+import { UpdateReviewDto } from './dto/update-review.dto';
 // import { UpdateReviewDto } from './dto/update-review.dto';
 
 @Injectable()
@@ -56,5 +57,20 @@ export class ReviewsService {
     if (!review) throw new NotFoundException(`review with id ${id} not found`);
 
     return review;
+  }
+
+  async update(id: string, updateReviewDto: UpdateReviewDto) {
+    const review = await this.reviewRepository.preload({
+      id: id,
+      ...updateReviewDto,
+    });
+    if (!review) throw new NotFoundException(`Review with id ${id} not found`);
+
+    try {
+      return await this.reviewRepository.save(review);
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException('Check logs for update error');
+    }
   }
 }
