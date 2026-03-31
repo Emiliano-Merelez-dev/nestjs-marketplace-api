@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param } from '@nestjs/common';
 import { ReviewsService } from './reviews.service';
 import { CreateReviewDto } from './dto/create-review.dto';
 // import { UpdateReviewDto } from './dto/update-review.dto';
@@ -15,5 +15,10 @@ export class ReviewsController {
   @Get()
   findAll() {
     return this.reviewsService.findAll();
+  }
+
+  @Get(':term')
+  findOne(@Param('term') term: string) {
+    return this.reviewsService.findOne(term);
   }
 }

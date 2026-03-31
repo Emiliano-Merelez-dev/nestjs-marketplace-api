@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Injectable,
   InternalServerErrorException,
+  NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Review } from './entities/review.entity';
@@ -44,5 +45,16 @@ export class ReviewsService {
     } catch (error) {
       throw new BadRequestException(error);
     }
+  }
+
+  async findOne(id: string) {
+    const review = this.reviewRepository.findOne({
+      where: { id },
+      relations: ['user', 'product'],
+    });
+
+    if (!review) throw new NotFoundException(`review with id ${id} not found`);
+
+    return review;
   }
 }
