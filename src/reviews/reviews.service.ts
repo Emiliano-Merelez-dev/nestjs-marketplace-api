@@ -49,7 +49,7 @@ export class ReviewsService {
   }
 
   async findOne(id: string) {
-    const review = this.reviewRepository.findOne({
+    const review = await this.reviewRepository.findOne({
       where: { id },
       relations: ['user', 'product'],
     });
@@ -72,5 +72,15 @@ export class ReviewsService {
       console.log(error);
       throw new InternalServerErrorException('Check logs for update error');
     }
+  }
+
+  async remove(id: string) {
+    const review = await this.findOne(id);
+
+    await this.reviewRepository.remove(review);
+
+    return {
+      message: `Review with id ${id} removed succefully`,
+    };
   }
 }
