@@ -12,6 +12,7 @@ import { User } from 'src/auth/entities/user.entity';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { validate as isUuid } from 'uuid';
+import { ProductImage } from './entities/product-image.entity';
 
 @Injectable()
 export class ProductsService {
@@ -23,6 +24,9 @@ export class ProductsService {
 
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+
+    @InjectRepository(ProductImage)
+    private readonly productImageRepository: Repository<ProductImage>,
   ) {}
 
   async findAll() {
@@ -37,7 +41,7 @@ export class ProductsService {
   async create(createProuductDto: CreateProductDto) {
     try {
       const user = await this.userRepository.findOneBy({
-        id: 'ea5ef178-41ce-4147-ae2c-c891497d8830',
+        id: '2478857b-6b9c-4b4d-8db7-a3d14cbc68e8',
       });
       const product = this.productRepository.create({
         ...this.formatProductData(createProuductDto),
@@ -94,6 +98,9 @@ export class ProductsService {
   async remove(id: string) {
     const product = await this.findOne(id);
     await this.productRepository.remove(product);
+    return {
+      message: `product with id ${id} deleted`,
+    };
   }
 
   private handleDBExceptions(error: any) {
@@ -106,13 +113,20 @@ export class ProductsService {
   }
 
   private formatProductData(dto: CreateProductDto | UpdateProductDto) {
-    const { gender, category, ...details } = dto;
+    const { gender, category, images, ...details } = dto;
 
     return {
       ...details,
-      // Solo mapeamos si el valor existe (útil para el UpdateDto)
+
       ...(gender && { gender: Array.isArray(gender) ? gender : [gender] }),
+
       ...(category && { category: { id: category } }),
+
+      ...(images && {
+        images: images.map((url) =>
+          this.productImageRepository.create({ url }),
+        ),
+      }),
     };
   }
 }

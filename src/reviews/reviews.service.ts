@@ -25,7 +25,7 @@ export class ReviewsService {
       const review = this.reviewRepository.create({
         ...reviewDetails,
         product: { id: productId },
-        user: { id: 'ea5ef178-41ce-4147-ae2c-c891497d8830' },
+        user: { id: '2478857b-6b9c-4b4d-8db7-a3d14cbc68e8' },
       });
 
       await this.reviewRepository.save(review);
