@@ -1,3 +1,4 @@
+import { Order } from 'src/orders/entities/order.entity';
 import { Product } from 'src/products/entities/product.entity';
 import { Review } from 'src/reviews/entities/review.entity';
 import {
@@ -43,6 +44,9 @@ export class User {
 
   @OneToMany(() => Review, (review) => review.user, { cascade: true })
   reviews: Review[];
+
+  @OneToMany(() => Order, (order) => order.user)
+  orders: Order[];
 
   @BeforeInsert()
   checkFieldsBeforeInsert() {

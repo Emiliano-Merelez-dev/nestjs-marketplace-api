@@ -11,7 +11,8 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { ProductImage } from './product-image.entity';
+import { ProductImage } from './index';
+import { OrderItem } from 'src/orders/entities/order-item.entity';
 
 @Entity({ name: 'products' })
 export class Product {
@@ -73,6 +74,12 @@ export class Product {
   })
   images?: ProductImage[];
 
+  @OneToMany(() => Review, (review) => review.product, { cascade: true })
+  reviews: Review[];
+
+  @OneToMany(() => OrderItem, (orderItem) => orderItem.product)
+  orderItems: OrderItem[];
+
   @ManyToOne(() => User, (user) => user.product, { eager: true })
   @JoinColumn({ name: 'user_id' })
   user: User;
@@ -80,9 +87,6 @@ export class Product {
   @ManyToOne(() => Category, (category) => category.products, { eager: true })
   @JoinColumn({ name: 'category_id' }) // <--- CONECTA CON LA COLUMNA category_id
   category: Category;
-
-  @OneToMany(() => Review, (review) => review.product, { cascade: true })
-  reviews: Review[];
 
   @BeforeInsert()
   checkSlugInsert() {

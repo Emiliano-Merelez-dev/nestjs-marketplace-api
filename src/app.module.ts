@@ -7,6 +7,7 @@ import { ProductsModule } from './products/products.module';
 import { AuthModule } from './auth/auth.module';
 import { CategoriesModule } from './categories/categories.module';
 import { ReviewsModule } from './reviews/reviews.module';
+import { OrdersModule } from './orders/orders.module';
 
 @Module({
   imports: [
@@ -20,7 +21,7 @@ import { ReviewsModule } from './reviews/reviews.module';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       autoLoadEntities: true,
-      // synchronize: true,
+      synchronize: true,
     }),
 
     ProductsModule,
@@ -31,6 +32,8 @@ import { ReviewsModule } from './reviews/reviews.module';
     CategoriesModule,
 
     ReviewsModule,
+
+    OrdersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
