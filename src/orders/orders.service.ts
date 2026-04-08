@@ -84,4 +84,10 @@ export class OrdersService {
       await queryRunner.release();
     }
   }
+
+  findAll() {
+    return this.orderRepository.find({
+      relations: ['user', 'orderItems', 'orderItems.product'],
+    });
+  }
 }
