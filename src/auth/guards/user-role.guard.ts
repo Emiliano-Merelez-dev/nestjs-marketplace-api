@@ -1,0 +1,38 @@
+import { Reflector } from '@nestjs/core';
+import {
+  CanActivate,
+  ExecutionContext,
+  Injectable,
+  BadRequestException,
+  ForbiddenException,
+} from '@nestjs/common';
+import { User } from '../entities/user.entity';
+import { META_ROLES } from '../decorators/role-protected.decorator';
+
+@Injectable()
+export class UserRoleGuard implements CanActivate {
+  constructor(private readonly reflector: Reflector) {}
+
+  canActivate(context: ExecutionContext): boolean {
+    const validRoles: string[] = this.reflector.get(
+      META_ROLES,
+      context.getHandler(),
+    );
+
+    if (!validRoles || validRoles.length === 0) return true;
+
+    const req = context.switchToHttp().getRequest();
+    const user = req.user as User;
+
+    if (!user) throw new BadRequestException('User not found');
+
+    // Ojo: Asegurate que en tu UserEntity sea 'role' o 'roles'
+    for (const role of user.role) {
+      if (validRoles.includes(role)) return true;
+    }
+
+    throw new ForbiddenException(
+      `User ${user.name} needs a valid role: [${validRoles}]`,
+    );
+  }
+}
