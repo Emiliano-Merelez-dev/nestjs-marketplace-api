@@ -1,37 +1,92 @@
-import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-// import { UpdateUserDto } from './dto/update-user.dto';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+  UnauthorizedException,
+} from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
+import * as bcrypt from 'bcrypt';
+
+import { User } from './entities/user.entity';
+import { JwtPayload } from './interfaces/jwt-payload.interface';
+import { CreateUserDto, LoginUserDto } from './dto';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    private readonly jwtService: JwtService,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
     try {
-      const user = this.userRepository.create(createUserDto);
-      await this.userRepository.save(user);
+      const { password, ...userData } = createUserDto;
 
-      return user;
+      const user = this.userRepository.create({
+        ...userData,
+        password: bcrypt.hashSync(password, 10),
+      });
+
+      await this.userRepository.save(user);
+      delete user.password;
+
+      return {
+        ...user,
+        token: this.getJwtToken({ id: user.id }),
+      };
     } catch (error) {
-      console.log(error);
+      this.handleDBErrors(error);
     }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
+  async login(loginUserDto: LoginUserDto) {
+    const { password, email } = loginUserDto;
+
+    const user = await this.userRepository.findOne({
+      where: { email },
+      select: {
+        email: true,
+        password: true,
+        id: true,
+        name: true,
+        role: true,
+        isActive: true,
+      },
+    });
+
+    if (!user)
+      throw new UnauthorizedException('Credentials are not valid (email)');
+
+    if (!bcrypt.compareSync(password, user.password))
+      throw new UnauthorizedException('Credentials are not valid (password)');
+
+    delete user.password;
+
+    return {
+      ...user,
+      token: this.getJwtToken({ id: user.id }),
+    };
   }
 
-  // update(id: number, updateUserDto: UpdateUserDto){
-  //   return `This action updates a #${} auth`;
-  // }
+  // Este sirve para cuando el front refresca la página y quiere un token nuevo
+  checkAuthStatus(user: User) {
+    return {
+      ...user,
+      token: this.getJwtToken({ id: user.id }),
+    };
+  }
 
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
+  private getJwtToken(payload: JwtPayload) {
+    const token = this.jwtService.sign(payload);
+    return token;
+  }
+
+  private handleDBErrors(error: any): never {
+    if (error.code === '23505') throw new BadRequestException(error.detail);
+    console.log(error);
+    throw new InternalServerErrorException('Please check server logs');
   }
 }
