@@ -13,6 +13,7 @@ export enum OrderStatus {
   PENDING = 'pending',
   PAID = 'paid',
   SHIPPED = 'shipped',
+  CANCELED = 'canceled',
 }
 
 @Entity({ name: 'orders' })
@@ -33,7 +34,7 @@ export class Order {
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
-  @ManyToOne(() => User, (user) => user.orders, { eager: true })
+  @ManyToOne(() => User, (user) => user.orders)
   user: User;
 
   @OneToMany(() => OrderItem, (orderItem) => orderItem.order, { cascade: true })
