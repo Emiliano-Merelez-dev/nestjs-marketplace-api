@@ -7,12 +7,14 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Product } from './entities/product.entity';
-import { User } from 'src/auth/entities/user.entity';
+
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
+
 import { validate as isUuid } from 'uuid';
-import { ProductImage } from './entities/product-image.entity';
+import { Product, ProductImage } from './entities';
+import { User } from 'src/auth/entities/user.entity';
+import { PaginationDto } from 'src/common/dtos/pagination.dto';
 
 @Injectable()
 export class ProductsService {
@@ -29,20 +31,24 @@ export class ProductsService {
     private readonly productImageRepository: Repository<ProductImage>,
   ) {}
 
-  async findAll() {
+  async findAll(paginationDto: PaginationDto) {
     try {
-      const products = await this.productRepository.find({});
+      const { limit = 10, offset = 0 } = paginationDto;
+      const products = await this.productRepository.find({
+        take: limit,
+        skip: offset,
+        relations: {
+          images: true,
+        },
+      });
       return products;
     } catch (error) {
       this.handleDBExceptions(error);
     }
   }
 
-  async create(createProuductDto: CreateProductDto) {
+  async create(createProuductDto: CreateProductDto, user: User) {
     try {
-      const user = await this.userRepository.findOneBy({
-        id: '2478857b-6b9c-4b4d-8db7-a3d14cbc68e8',
-      });
       const product = this.productRepository.create({
         ...this.formatProductData(createProuductDto),
         user: user,
