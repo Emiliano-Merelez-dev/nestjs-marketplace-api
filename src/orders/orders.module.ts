@@ -6,6 +6,7 @@ import { Order } from './entities/order.entity';
 import { OrderItem } from './entities';
 import { Product } from 'src/products/entities';
 import { ProductsModule } from 'src/products/products.module';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   controllers: [OrdersController],
@@ -14,6 +15,7 @@ import { ProductsModule } from 'src/products/products.module';
     TypeOrmModule.forFeature([Order, OrderItem, Product]),
 
     ProductsModule,
+    AuthModule,
   ],
 })
 export class OrdersModule {}
