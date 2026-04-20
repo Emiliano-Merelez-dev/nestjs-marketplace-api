@@ -39,4 +39,13 @@ export class Order {
 
   @OneToMany(() => OrderItem, (orderItem) => orderItem.order, { cascade: true })
   orderItems: OrderItem[];
+
+  @Column('bool', { default: false })
+  isPaid: boolean;
+
+  @Column('timestamp', { nullable: true })
+  paidAt: Date;
+
+  @Column('text', { nullable: true, unique: true })
+  transactionId?: string;
 }
