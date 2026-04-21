@@ -1,4 +1,5 @@
-import { User } from 'src/auth/entities/user.entity';
+import type { User } from 'src/auth/entities/user.entity';
+import { User as UserEntity } from 'src/auth/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
@@ -8,14 +9,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { OrderItem } from './order-item.entity';
-
-export enum OrderStatus {
-  PENDING = 'pending',
-  PAID = 'paid',
-  SHIPPED = 'shipped',
-  CANCELED = 'canceled',
-}
-
+import { OrderStatus } from './order-status.enum';
 @Entity({ name: 'orders' })
 export class Order {
   @PrimaryGeneratedColumn('uuid')
@@ -34,7 +28,7 @@ export class Order {
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
-  @ManyToOne(() => User, (user) => user.orders)
+  @ManyToOne(() => UserEntity, (user) => user.orders)
   user: User;
 
   @OneToMany(() => OrderItem, (orderItem) => orderItem.order, { cascade: true })

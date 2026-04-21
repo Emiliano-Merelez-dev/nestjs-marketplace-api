@@ -1,7 +1,8 @@
-import { Product } from 'src/products/entities';
+import type { Product } from 'src/products/entities/product.entity';
+import { Product as ProductEntity } from 'src/products/entities/product.entity';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { Order } from './order.entity';
-
+import type { Order } from './order.entity';
+import { Order as OrderEntity } from './order.entity';
 @Entity({ name: 'order_items' })
 export class OrderItem {
   @PrimaryGeneratedColumn('uuid')
@@ -13,9 +14,13 @@ export class OrderItem {
   @Column('float')
   price: number;
 
-  @ManyToOne(() => Order, (order) => order.orderItems, { onDelete: 'CASCADE' })
+  @ManyToOne(() => OrderEntity, (order) => order.orderItems, {
+    onDelete: 'CASCADE',
+  })
   order: Order;
 
-  @ManyToOne(() => Product, (product) => product.orderItems, { eager: true })
+  @ManyToOne(() => ProductEntity, (product) => product.orderItems, {
+    eager: true,
+  })
   product: Product;
 }
