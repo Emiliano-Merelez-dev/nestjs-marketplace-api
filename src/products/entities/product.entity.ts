@@ -11,7 +11,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { ProductImage } from './index';
+import { ProductImage } from './product-image.entity';
 import { OrderItem } from 'src/orders/entities/order-item.entity';
 
 @Entity({ name: 'products' })
