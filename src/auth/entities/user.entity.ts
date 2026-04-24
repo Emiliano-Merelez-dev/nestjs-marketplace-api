@@ -1,5 +1,7 @@
-import { Order } from 'src/orders/entities/order.entity';
-import { Product } from 'src/products/entities/product.entity';
+import type { Order } from 'src/orders/entities/order.entity';
+import type { Product } from 'src/products/entities/product.entity';
+import { Order as OrderEntity } from 'src/orders/entities/order.entity';
+import { Product as ProductEntity } from 'src/products/entities/product.entity';
 import { Review } from 'src/reviews/entities/review.entity';
 import {
   BeforeInsert,
@@ -39,14 +41,14 @@ export class User {
   })
   isActive: boolean;
 
-  @OneToMany(() => Product, (product) => product.user)
+  @OneToMany(() => ProductEntity, (product) => product.user)
   product: Product;
 
   @OneToMany(() => Review, (review) => review.user, { cascade: true })
   reviews: Review[];
 
-  @OneToMany(() => Order, (order) => order.user)
-  orders: Order[];
+  @OneToMany(() => OrderEntity, (order) => order.user)
+  orders: Order;
 
   @BeforeInsert()
   checkFieldsBeforeInsert() {
