@@ -12,9 +12,11 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 
 import { validate as isUuid } from 'uuid';
-import { Product, ProductImage } from './entities';
+import { Product } from './entities/product.entity';
+import { ProductImage } from './entities/product-image.entity';
 import { User } from 'src/auth/entities/user.entity';
 import { PaginationDto } from 'src/common/dtos/pagination.dto';
+import { DataSource } from 'typeorm';
 
 @Injectable()
 export class ProductsService {
@@ -24,11 +26,10 @@ export class ProductsService {
     @InjectRepository(Product)
     private readonly productRepository: Repository<Product>,
 
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
-
     @InjectRepository(ProductImage)
     private readonly productImageRepository: Repository<ProductImage>,
+
+    private readonly dataSource: DataSource,
   ) {}
 
   async findAll(paginationDto: PaginationDto) {
@@ -41,7 +42,10 @@ export class ProductsService {
           images: true,
         },
       });
-      return products;
+      return products.map((product) => ({
+        ...product,
+        images: product.images.map((img) => img.url),
+      }));
     } catch (error) {
       this.handleDBExceptions(error);
     }
@@ -49,18 +53,19 @@ export class ProductsService {
 
   async create(createProuductDto: CreateProductDto, user: User) {
     try {
+      const { images = [] } = createProuductDto;
       const product = this.productRepository.create({
         ...this.formatProductData(createProuductDto),
+        images: images.map((image) =>
+          this.productImageRepository.create({ url: image }),
+        ),
         user: user,
       });
 
       await this.productRepository.save(product);
-      return product;
+      return { ...product, images };
     } catch (error) {
       this.handleDBExceptions(error);
-      throw new InternalServerErrorException(
-        'error in the server, review logs',
-      );
     }
   }
 
@@ -76,6 +81,7 @@ export class ProductsService {
           title: term.toUpperCase(),
           slug: term.toLowerCase(),
         })
+        .leftJoinAndSelect('prod.images', 'prodImages')
         .getOne();
     }
 
@@ -84,7 +90,9 @@ export class ProductsService {
     return product;
   }
 
-  async update(id: string, updateProductDto: UpdateProductDto) {
+  async update(id: string, updateProductDto: UpdateProductDto, user: User) {
+    const { images } = updateProductDto;
+
     const product = await this.productRepository.preload({
       id: id,
       ...this.formatProductData(updateProductDto),
@@ -93,10 +101,30 @@ export class ProductsService {
     if (!product)
       throw new NotFoundException(`product with id: ${id} not found`);
 
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
     try {
-      await this.productRepository.save(product);
-      return product;
+      if (images) {
+        await queryRunner.manager.delete(ProductImage, { product: { id } });
+
+        product.images = images.map((image) =>
+          this.productImageRepository.create({ url: image }),
+        );
+      }
+
+      product.user = user;
+
+      await queryRunner.manager.save(product);
+
+      await queryRunner.commitTransaction();
+      await queryRunner.release();
+
+      return this.findOnePlain(id);
     } catch (error) {
+      await queryRunner.rollbackTransaction();
+      await queryRunner.release();
       this.handleDBExceptions(error);
     }
   }
@@ -118,6 +146,14 @@ export class ProductsService {
     );
   }
 
+  private async findOnePlain(term: string) {
+    const { images = [], ...rest } = await this.findOne(term);
+    return {
+      ...rest,
+      images: images.map((image) => image.url),
+    };
+  }
+
   private formatProductData(dto: CreateProductDto | UpdateProductDto) {
     const { gender, category, images, ...details } = dto;
 
@@ -134,5 +170,15 @@ export class ProductsService {
         ),
       }),
     };
+  }
+
+  private async deleteAllProducts() {
+    const query = this.productRepository.createQueryBuilder('product');
+
+    try {
+      return await query.delete().where({}).execute();
+    } catch (error) {
+      this.handleDBExceptions(error);
+    }
   }
 }
