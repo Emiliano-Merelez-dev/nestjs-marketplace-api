@@ -5,14 +5,16 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Order, OrderItem } from './entities';
+import { Order } from './entities/order.entity';
+import { OrderItem } from './entities/order-item.entity';
 import { In, Repository } from 'typeorm';
-import { Product } from 'src/products/entities';
+import { Product } from 'src/products/entities/product.entity';
 import { DataSource } from 'typeorm';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { User } from 'src/auth/entities/user.entity';
 import { UpdateOrderDto } from './dto/update-order.dto';
-import { OrderStatus } from './entities/order.entity';
+import { OrderStatus } from './entities/order-status.enum';
+import { PaginationDto } from 'src/common/dtos/pagination.dto';
 
 @Injectable()
 export class OrdersService {
@@ -88,22 +90,33 @@ export class OrdersService {
     }
   }
 
-  findAll() {
-    return this.orderRepository.find({
+  async findAll(paginationDto: PaginationDto) {
+    const { limit = 10, offset = 0 } = paginationDto;
+
+    const [orders, total] = await this.orderRepository.findAndCount({
+      take: limit,
+      skip: offset,
       relations: ['user', 'orderItems', 'orderItems.product'],
       order: {
         createdAt: 'DESC',
       },
     });
+
+    return {
+      total,
+      orders,
+    };
   }
 
-  // orders.service.ts
+  async findAllByUser(user: User, paginationDto: PaginationDto) {
+    const { limit = 4, offset = 0 } = paginationDto;
 
-  async findAllByUser(user: User) {
-    return await this.orderRepository.find({
+    const [orders, total] = await this.orderRepository.findAndCount({
       where: {
         user: { id: user.id },
       },
+      take: limit,
+      skip: offset,
       relations: [
         'orderItems',
         'orderItems.product',
@@ -114,6 +127,11 @@ export class OrdersService {
         createdAt: 'DESC',
       },
     });
+
+    return {
+      total,
+      orders,
+    };
   }
 
   async findOne(id: string, user: User) {

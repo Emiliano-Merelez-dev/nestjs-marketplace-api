@@ -15,6 +15,7 @@ import { User } from 'src/auth/entities/user.entity';
 import { Auth } from 'src/auth/decorators';
 import { ValidRoles } from 'src/auth/interfaces';
 import { UpdateOrderDto } from './dto/update-order.dto';
+import { PaginationDto } from 'src/common/dtos/pagination.dto';
 
 @Controller('orders')
 export class OrdersController {
@@ -28,14 +29,14 @@ export class OrdersController {
 
   @Get()
   @Auth(ValidRoles.admin)
-  findAll() {
-    return this.ordersService.findAll();
+  findAll(paginationDto: PaginationDto) {
+    return this.ordersService.findAll(paginationDto);
   }
 
   @Get('user-orders')
   @Auth()
-  findByUser(@GetUser() user: User) {
-    return this.ordersService.findAllByUser(user);
+  findByUser(paginationDto: PaginationDto, @GetUser() user: User) {
+    return this.ordersService.findAllByUser(user, paginationDto);
   }
 
   @Get(':id')
