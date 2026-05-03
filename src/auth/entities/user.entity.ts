@@ -11,12 +11,23 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Entity('users')
 export class User {
+  @ApiProperty({
+    example: 'f5b3a1e2-6c54-4b01-90e6-d701748f0851',
+    description: 'Unique User ID',
+    uniqueItems: true,
+  })
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
+  @ApiProperty({
+    example: 'otismarks@google.com',
+    description: 'User email address',
+    uniqueItems: true,
+  })
   @Column('text', {
     unique: true,
   })
@@ -27,26 +38,42 @@ export class User {
   })
   password: string;
 
+  @ApiProperty({
+    example: 'Otis Marks',
+    description: 'Full name of the user',
+  })
   @Column('text')
   name: string;
 
+  @ApiProperty({
+    example: ['user', 'admin'],
+    description: 'User roles/permissions',
+    default: ['user'],
+  })
   @Column('text', {
     array: true,
     default: ['user'],
   })
   role: string[];
 
+  @ApiProperty({
+    example: true,
+    description: 'Is the user account active?',
+  })
   @Column('bool', {
     default: true,
   })
   isActive: boolean;
 
+  @ApiProperty({ type: () => ProductEntity, isArray: true })
   @OneToMany(() => ProductEntity, (product) => product.user)
   product: Product;
 
+  @ApiProperty({ type: () => Review, isArray: true })
   @OneToMany(() => Review, (review) => review.user, { cascade: true })
   reviews: Review[];
 
+  @ApiProperty({ type: () => OrderEntity, isArray: true })
   @OneToMany(() => OrderEntity, (order) => order.user)
   orders: Order;
 

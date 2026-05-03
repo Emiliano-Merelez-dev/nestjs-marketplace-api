@@ -19,7 +19,9 @@ import { CreateUserDto, LoginUserDto } from './dto';
 import { User } from './entities/user.entity';
 import { UserRoleGuard } from './guards/user-role.guard';
 import { ValidRoles } from './interfaces';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -30,6 +32,16 @@ export class AuthController {
   }
 
   @Post('login')
+  @ApiResponse({
+    status: 201,
+    description: 'User logged in',
+    schema: {
+      example: {
+        token: 'eyJhbGciOiJIUzI1Ni...',
+        user: { email: 'otismarks@google.com' },
+      },
+    },
+  })
   loginUser(@Body() loginUserDto: LoginUserDto) {
     return this.authService.login(loginUserDto);
   }
