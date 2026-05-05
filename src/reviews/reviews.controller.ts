@@ -7,19 +7,26 @@ import {
   Patch,
   ParseUUIDPipe,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { ReviewsService } from './reviews.service';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
-// import { UpdateReviewDto } from './dto/update-review.dto';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { GetUser } from 'src/auth/decorators';
+import { User } from 'src/auth/entities/user.entity';
+import { AuthGuard } from '@nestjs/passport';
 
+@ApiTags('Reviews')
 @Controller('reviews')
 export class ReviewsController {
   constructor(private readonly reviewsService: ReviewsService) {}
 
   @Post()
-  create(@Body() createReviewDto: CreateReviewDto) {
-    return this.reviewsService.create(createReviewDto);
+  @UseGuards(AuthGuard())
+  @ApiBearerAuth('JWT-auth')
+  create(@Body() createReviewDto: CreateReviewDto, @GetUser() user: User) {
+    return this.reviewsService.create(createReviewDto, user);
   }
 
   @Get()

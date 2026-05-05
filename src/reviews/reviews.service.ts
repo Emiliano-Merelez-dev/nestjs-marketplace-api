@@ -9,6 +9,7 @@ import { Review } from './entities/review.entity';
 import { Repository } from 'typeorm';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
+import { User } from 'src/auth/entities/user.entity';
 // import { UpdateReviewDto } from './dto/update-review.dto';
 
 @Injectable()
@@ -16,16 +17,15 @@ export class ReviewsService {
   constructor(
     @InjectRepository(Review)
     private readonly reviewRepository: Repository<Review>,
-    // necesitamos vincular la review
   ) {}
 
-  async create(createReviewDto: CreateReviewDto) {
+  async create(createReviewDto: CreateReviewDto, user: User) {
     try {
       const { productId, ...reviewDetails } = createReviewDto;
       const review = this.reviewRepository.create({
         ...reviewDetails,
         product: { id: productId },
-        user: { id: '2478857b-6b9c-4b4d-8db7-a3d14cbc68e8' },
+        user: user,
       });
 
       await this.reviewRepository.save(review);
