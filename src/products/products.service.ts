@@ -38,6 +38,9 @@ export class ProductsService {
       const products = await this.productRepository.find({
         take: limit,
         skip: offset,
+        order: {
+          id: 'ASC',
+        },
         relations: {
           images: true,
         },
