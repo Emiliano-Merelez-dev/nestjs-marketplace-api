@@ -5,7 +5,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-
     image: proyecto-marketplace-app:v1.0.0
     container_name: marketplace-app
     ports:
@@ -22,10 +21,16 @@ services:
       HOST_API: ${HOST_API}
       JWT_SECRET: ${JWT_SECRET}
     depends_on:
-      - db
+      db:
+        condition: service_healthy
   db:
     image: postgres:14.3
     restart: always
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${DB_USERNAME} -d ${DB_NAME}']
+      interval: 5s
+      timeout: 5s
+      retries: 5
     ports:
       - '5432:5432'
     environment:
@@ -34,7 +39,7 @@ services:
       POSTGRES_USER: ${DB_USERNAME}
     container_name: marketplacedb
     volumes:
-      - ./postgres:/var/lib/postgresql/data
+      - postgres-db:/var/lib/postgresql/data
 volumes:
   postgres-db:
     external: false
