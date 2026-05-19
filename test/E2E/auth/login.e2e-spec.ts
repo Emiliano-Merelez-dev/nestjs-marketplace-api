@@ -83,6 +83,53 @@ describe('Auth register and login (e2e)', () => {
     expect(response.statusCode).toBe(400);
   });
 
+  it('/api/auth/login (POST) - should throw error if email no valid', async () => {
+    const response = await request(app.getHttpServer())
+      .post('/api/auth/login')
+      .send({
+        email: 'emilianodarte56@google.com',
+        password: 'Abc123456',
+      });
+
+    expect(response.body.message).toEqual('Credentials are not valid (email)');
+    expect(response.statusCode).toBe(401);
+  });
+
+  it('/api/auth/login (POST) - should throw error if password no valid', async () => {
+    const response = await request(app.getHttpServer())
+      .post('/api/auth/login')
+      .send({
+        email: 'emilianodarte@google.com',
+        password: 'Abc12345689',
+      });
+
+    expect(response.body.message).toEqual(
+      'Credentials are not valid (password)',
+    );
+    expect(response.statusCode).toBe(401);
+  });
+
+  it('/api/auth/login (POST) - should 201 with body valid', async () => {
+    const response = await request(app.getHttpServer())
+      .post('/api/auth/login')
+      .send({
+        email: 'emilianodarte@google.com',
+        password: 'Abc123456',
+      });
+
+    console.log(response.body);
+
+    expect(response.body).toEqual({
+      id: expect.any(String),
+      email: 'emilianodarte@google.com',
+      name: 'emi glory',
+      role: ['user'],
+      isActive: true,
+      token: expect.any(String),
+    });
+    expect(response.statusCode).toBe(201);
+  });
+
   afterAll(async () => {
     await app.close();
   });
