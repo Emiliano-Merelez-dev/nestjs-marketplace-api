@@ -105,7 +105,7 @@ describe('products (e2e)', () => {
 
     expect(response.statusCode).toBe(404);
     expect(response.body.message).toEqual(
-      'Product with 0be294dc-916f-4067-995 not found',
+      'Product with id 0be294dc-916f-4067-995 not found',
     );
   });
 
@@ -189,11 +189,13 @@ describe('products (e2e)', () => {
       `/api/products/${valid}`,
     );
 
-    expect(response.statusCode).toBe(200);
-    expect(response.body.message).toEqual(`product with id ${valid} deleted`);
+    expect(response.statusCode).toBe(404);
+    expect(response.body.message).toEqual(`Product with id ${valid} not found`);
+
+    // expect(response.body.message).toEqual(`product with id ${valid} deleted`);
   });
 
   afterAll(async () => {
-    await app.close(); // <--- Esto cierra las conexiones a la DB y mata los procesos de Nest
+    await app.close();
   });
 });

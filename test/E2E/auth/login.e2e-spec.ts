@@ -109,7 +109,7 @@ describe('Auth register and login (e2e)', () => {
     expect(response.statusCode).toBe(401);
   });
 
-  it('/api/auth/login (POST) - should 201 with body valid', async () => {
+  it('/api/auth/login (POST) - should return 201 with body valid', async () => {
     const response = await request(app.getHttpServer())
       .post('/api/auth/login')
       .send({
