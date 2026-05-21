@@ -88,7 +88,8 @@ export class ProductsService {
         .getOne();
     }
 
-    if (!product) throw new NotFoundException(`Product with ${term} not found`);
+    if (!product)
+      throw new NotFoundException(`Product with id ${term} not found`);
 
     return product;
   }

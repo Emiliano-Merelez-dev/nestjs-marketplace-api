@@ -29,10 +29,17 @@ interface SeedUser {
   isActive: boolean;
 }
 
+interface SeedReviews {
+  rating: number;
+  comment: string;
+  created_at: Date;
+}
+
 interface SeedData {
   users: SeedUser[];
   products: SeedProduct[];
   categories: SeedCategories[];
+  reviews: SeedReviews[];
 }
 
 export const initialData: SeedData = {
@@ -2010,6 +2017,296 @@ export const initialData: SeedData = {
         'https://picsum.photos/seed/luxury-office-notebook-leather-2/600/400',
       ],
       category: 'office-supplies',
+    },
+  ],
+  reviews: [
+    {
+      rating: 5,
+      comment:
+        'Excellent quality, the size fits me perfectly. Highly recommend.',
+      created_at: new Date(),
+    },
+    {
+      rating: 4,
+      comment:
+        'Very satisfied with the product, the fabric is warm. Fast delivery.',
+      created_at: new Date(),
+    },
+    {
+      rating: 2,
+      comment:
+        'The design is nice but the sizing runs smaller than what the size chart states.',
+      created_at: new Date(),
+    },
+    {
+      rating: 5,
+      comment:
+        'Amazing, exceeded my expectations. Would definitely buy again without hesitation.',
+      created_at: new Date(),
+    },
+    {
+      rating: 1,
+      comment:
+        'Terrible quality. The print completely washed off on the very first cycle. Do not recommend.',
+      created_at: new Date(),
+    },
+    {
+      rating: 4,
+      comment: 'Good value for money. It delivers exactly what it promises.',
+      created_at: new Date(),
+    },
+    {
+      rating: 3,
+      comment:
+        'It is okay for the price, but the stitching finishes could definitely be better.',
+      created_at: new Date(),
+    },
+    {
+      rating: 5,
+      comment:
+        'By far the best item in the catalog, the material quality feels premium.',
+      created_at: new Date(),
+    },
+    {
+      rating: 4,
+      comment:
+        'Arrived in perfect condition and well packaged. A classic that never fails.',
+      created_at: new Date(),
+    },
+    {
+      rating: 2,
+      comment:
+        'Took an eternity to arrive and they sent me the wrong color anyway.',
+      created_at: new Date(),
+    },
+    {
+      rating: 5,
+      comment:
+        'An absolute gem. Incredibly comfortable and very stylish. Great fit.',
+      created_at: new Date(),
+    },
+    {
+      rating: 4,
+      comment:
+        'The product is great, lowering it by one star only because shipping took two extra days.',
+      created_at: new Date(),
+    },
+    {
+      rating: 3,
+      comment:
+        'Pretty average, nothing out of the ordinary. Fine for casual day-to-day use.',
+      created_at: new Date(),
+    },
+    {
+      rating: 5,
+      comment:
+        'Top-notch materials, very durable and the fabric feels soft to the touch.',
+      created_at: new Date(),
+    },
+    {
+      rating: 1,
+      comment:
+        'Received a defective product and had to go through the return process. Such a hassle.',
+      created_at: new Date(),
+    },
+    {
+      rating: 4,
+      comment:
+        'Great quality, the colors look identical to the ones on the website photos.',
+      created_at: new Date(),
+    },
+    {
+      rating: 5,
+      comment:
+        'Excellent customer service and the item is flawless. 10 out of 10.',
+      created_at: new Date(),
+    },
+    {
+      rating: 2,
+      comment:
+        'The fabric is way too thin, completely see-through. Not what I expected.',
+      created_at: new Date(),
+    },
+    {
+      rating: 4,
+      comment: 'Loved the design. Perfect choice for a nice gift.',
+      created_at: new Date(),
+    },
+    {
+      rating: 5,
+      comment:
+        'Bought two of them and they are honestly amazing. Super recommended.',
+      created_at: new Date(),
+    },
+    {
+      rating: 3,
+      comment:
+        'It is fine, but it seems a bit overpriced for the build quality.',
+      created_at: new Date(),
+    },
+    {
+      rating: 5,
+      comment: 'Incredible attention to detail. Worth every single cent.',
+      created_at: new Date(),
+    },
+    {
+      rating: 4,
+      comment:
+        'Very comfortable and the size matches the measurements exactly.',
+      created_at: new Date(),
+    },
+    {
+      rating: 1,
+      comment: 'Came with a torn seam on the back. Extremely disappointed.',
+      created_at: new Date(),
+    },
+    {
+      rating: 5,
+      comment: 'Super warm and stylish. You can tell this is built to last.',
+      created_at: new Date(),
+    },
+    {
+      rating: 4,
+      comment:
+        'Everything was perfect. The shipment arrived sooner than expected.',
+      created_at: new Date(),
+    },
+    {
+      rating: 2,
+      comment:
+        'The size was way too large and the exchange process is a headache.',
+      created_at: new Date(),
+    },
+    {
+      rating: 5,
+      comment:
+        'Excellent purchase, super practical and comfy for everyday wear.',
+      created_at: new Date(),
+    },
+    {
+      rating: 3,
+      comment:
+        'The product is fine, but the listing photos are a bit misleading.',
+      created_at: new Date(),
+    },
+    {
+      rating: 4,
+      comment:
+        'Very satisfied. Good material and the design is quite original.',
+      created_at: new Date(),
+    },
+    {
+      rating: 5,
+      comment: 'Totally blew me away for this price point. Splendid.',
+      created_at: new Date(),
+    },
+    {
+      rating: 1,
+      comment: 'Do not buy this, the material feels super cheap and rigid.',
+      created_at: new Date(),
+    },
+    {
+      rating: 4,
+      comment:
+        'It fits a bit tight but stretched out nicely with wear. Very nice model.',
+      created_at: new Date(),
+    },
+    {
+      rating: 5,
+      comment:
+        'Flawless, matches the description perfectly. Fabric quality is outstanding.',
+      created_at: new Date(),
+    },
+    {
+      rating: 2,
+      comment:
+        'Arrived completely crushed due to the packaging and got slightly deformed.',
+      created_at: new Date(),
+    },
+    {
+      rating: 4,
+      comment:
+        'Looks great, pairs well with everything. Does its job perfectly.',
+      created_at: new Date(),
+    },
+    {
+      rating: 5,
+      comment:
+        'A total game-changer, top-tier materials. Worth the investment.',
+      created_at: new Date(),
+    },
+    {
+      rating: 3,
+      comment:
+        'Nice looks but it feels delicate, definitely requires careful maintenance.',
+      created_at: new Date(),
+    },
+    {
+      rating: 5,
+      comment:
+        'Excellent, this is the third time buying from this brand and it never disappoints.',
+      created_at: new Date(),
+    },
+    {
+      rating: 4,
+      comment:
+        'It is lightweight and comfortable, ideal for mid-season weather.',
+      created_at: new Date(),
+    },
+    {
+      rating: 1,
+      comment:
+        'Awful. The color is completely different from the picture. Sent it right back.',
+      created_at: new Date(),
+    },
+    {
+      rating: 5,
+      comment: 'Wonderful product, completely exceeded my expectations.',
+      created_at: new Date(),
+    },
+    {
+      rating: 2,
+      comment: 'The print came slightly scratched in the corner. Such a shame.',
+      created_at: new Date(),
+    },
+    {
+      rating: 4,
+      comment:
+        'Good jacket, keeps you warm and the zippers feel sturdy and high-quality.',
+      created_at: new Date(),
+    },
+    {
+      rating: 5,
+      comment: 'Perfect fit and super fast delivery. Very professional team.',
+      created_at: new Date(),
+    },
+    {
+      rating: 3,
+      comment: 'Does the job, but the packaging arrived completely destroyed.',
+      created_at: new Date(),
+    },
+    {
+      rating: 4,
+      comment:
+        'Very happy with the purchase. The item is identical to what was advertised.',
+      created_at: new Date(),
+    },
+    {
+      rating: 2,
+      comment:
+        'Poor quality considering the price they charge. Would not buy again.',
+      created_at: new Date(),
+    },
+    {
+      rating: 5,
+      comment:
+        'The texture is amazing and the color is beautiful. Super happy with it.',
+      created_at: new Date(),
+    },
+    {
+      rating: 5,
+      comment: 'Highly recommended. Premium quality and accurate fit.',
+      created_at: new Date(),
     },
   ],
 };
