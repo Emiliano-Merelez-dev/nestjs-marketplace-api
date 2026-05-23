@@ -1,99 +1,150 @@
+# 🛒 E-Commerce Marketplace API
+
 <p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
+  <a href="http://nestjs.com/" target="blank">
+    <img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" />
+  </a>
 </p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
-
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
+<p align="center">
+  <img src="https://img.shields.io/badge/NestJS-E0234E?style=for-the-badge&logo=nestjs&logoColor=white" alt="NestJS" />
+  <img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL" />
+  <img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Docker" />
+  <img src="https://img.shields.io/badge/Jest-C21325?style=for-the-badge&logo=jest&logoColor=white" alt="Jest" />
 </p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
-## Description
+A modular RESTful API built with **NestJS**, **TypeScript**, and **PostgreSQL**. The project implements relational database entities, role-based access control (RBAC), containerized database environments, and automated End-to-End (E2E) testing suites.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+---
 
-## Project setup
+## 📊 Database Schema
 
-```bash
-$ npm install
-```
+The relational data model handles catalog management, user accounts, and purchase history. It utilizes UUID primary keys, explicit constraints, and cascading rules managed via TypeORM:
 
-## Compile and run the project
+![Database Schema](./assets/database-schema.png)
 
-```bash
-# development
-$ npm run start
+### Architectural Highlights:
 
-# watch mode
-$ npm run start:dev
+- **Users & Access Control:** Implements role-based authorization using an Enum field (`admin`, `user`, `superUser`) paired with NestJS Guards to restrict endpoint access based on account privileges.
+- **Products & Imagery:** Uses a One-to-Many (`@OneToMany`) relationship to bind product entries with an image gallery, applying an `onDelete: 'CASCADE'` constraint to handle cleanup and prevent orphan records.
+- **Order Lifecycle Snapshots:** Manages the Many-to-Many relationship between orders and products via an explicit `order_item` entity, capturing and freezing the historical price of items at the exact time of purchase.
+- **User Reviews:** Connects users and products through a relational `reviews` entity to store product ratings and feedback text dynamically.
 
-# production mode
-$ npm run start:prod
-```
+---
 
-## Run tests
+## ⚙️ Quick Start & Installation
 
-```bash
-# unit tests
-$ npm run test
+### 📋 Prerequisites
 
-# e2e tests
-$ npm run test:e2e
+Make sure you have [Git](https://git-scm.com/), [Node.js](https://nodejs.org/) (v18+ recommended), and [Docker Desktop](https://www.docker.com/products/docker-desktop/) installed and running on your machine.
 
-# test coverage
-$ npm run test:cov
-```
+---
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+### 1. Clone the Repository
 
 ```bash
-$ npm install -g mau
-$ mau deploy
+git clone https://github.com/Emiliano-Merelez-dev/nestjs-marketplace-api.git
+cd nestjs-marketplace-api
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+### 2. Environment Setup
 
-## Resources
+Create a .env file in the root directory. Copy this template and fill in your local credentials:
 
-Check out a few resources that may come in handy when working with NestJS:
+```bash
+# Database Configuration (PostgreSQL)
+DB_PASSWORD=
+DB_NAME=
+DB_USERNAME=
+DB_HOST=
+DB_PORT=
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+# Security & Sessions
+JWT_SECRET=
+PORT=
 
-## Support
+# PayPal Payment Gateway Integration
+PAYPAL_CLIENT_ID=
+PAYPAL_SECRET=
+PAYPAL_OAUTH_URL=
+PAYPAL_ORDERS_URL=
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+# Seller Automated Mailing Services
+EMAIL=
+PASSWORD=
 
-## Stay in touch
+# Sandbox Testing Credentials
+BUYER_EMAIL=
+PASSWORD_WITH_BUYER=
+```
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+### 3. Spin Up Infrastructure
 
-## License
+Launch the local PostgreSQL database container:
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+```bash
+docker compose up -d
+```
+
+### 4. Install Dependencies
+
+Install the required Node.js modules for the application:
+
+```bash
+npm install
+```
+
+### 5. Run the Application
+
+Launch the NestJS application in development mode:
+
+```bash
+npm run start:dev
+```
+
+The API will be available at: http://localhost:3000/api
+
+### 6. Seed the Database
+
+To facilitate local development and API testing, trigger the seeding script to populate the database:
+
+**Option A** (Recommended): Open your browser and navigate to the interactive Swagger Documentation at http://localhost:3000/api. Locate the Seed controller, expand the GET method, click "Try it out", and press "Execute".
+
+**Option B**: Send a direct HTTP request using Postman or any API client:
+
+```bash
+GET http://localhost:3000/api/seed
+```
+
+What this does: Populates the database with relational mock data (users, categories, products, reviews, and orders) for local development and testing purposes.
+
+## API Endpoints
+
+Private routes require passing a signed JWT Bearer Token in the authorization header:
+
+| Method   | Endpoint                 | Access                      | Description                                                                                   |
+| :------- | :----------------------- | :-------------------------- | :-------------------------------------------------------------------------------------------- |
+| **POST** | `/api/auth/register`     | Public                      | Registers a new user and returns a signed session JWT.                                        |
+| **POST** | `/api/auth/login`        | Public                      | Validates credentials and issues a signed session JWT.                                        |
+| **GET**  | `/api/auth/check-status` | Private (All Roles)         | Validates active tokens and handles automatic lifecycle renewal.                              |
+| **POST** | `/api/products`          | Protected (Admin/SuperUser) | Creates catalog entries with linked multi-image gallery uploads.                              |
+| **GET**  | `/api/products`          | Public                      | Fetches complete paginated lists of catalog entries.                                          |
+| **POST** | `/api/orders`            | Private (User)              | Commits transaction tickets capturing product snapshot configurations.                        |
+| **POST** | `/api/orders/pay`        | Private (User)              | Intercepts the PayPal `transaction_id`, validates payment state, and updates order lifecycle. |
+
+## Testing & Quality Assurance
+
+Automated End-to-End (.e2e-spec.ts) test suites are implemented using Jest and Supertest to validate route security, request validation payloads (ValidationPipes), and role hierarchy constraints under simulated execution contexts.
+
+To execute the test suites:
+
+```bash
+npm run test:e2e
+```
+
+To run tests in watch mode during development:
+
+```bash
+npm run test:e2e:watch
+```
