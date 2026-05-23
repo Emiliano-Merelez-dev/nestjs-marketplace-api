@@ -8,6 +8,7 @@ import { User } from 'src/auth/entities/user.entity';
 import { ProductImage } from 'src/products/entities/product-image.entity';
 import { Order } from 'src/orders/entities/order.entity';
 import { OrderItem } from 'src/orders/entities/order-item.entity';
+import { Review } from 'src/reviews/entities/review.entity';
 
 @Module({
   controllers: [SeedController],
@@ -20,6 +21,7 @@ import { OrderItem } from 'src/orders/entities/order-item.entity';
       ProductImage,
       Order,
       OrderItem,
+      Review,
     ]),
   ],
 })

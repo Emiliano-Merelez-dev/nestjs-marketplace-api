@@ -3,12 +3,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { initialData } from './data/seed.data';
-import { Product } from '../products/entities/product.entity'; // Ajustá según tus carpetas
+import { Product } from '../products/entities/product.entity';
 import { Category } from 'src/categories/entities/category.entity';
 import { User } from 'src/auth/entities/user.entity';
 import { ProductImage } from 'src/products/entities/product-image.entity';
 import { Order } from 'src/orders/entities/order.entity';
 import { OrderItem } from 'src/orders/entities/order-item.entity';
+import { Review } from 'src/reviews/entities/review.entity';
 
 @Injectable()
 export class SeedService {
@@ -30,28 +31,27 @@ export class SeedService {
 
     @InjectRepository(OrderItem)
     private readonly orderItemRepository: Repository<OrderItem>,
+
+    @InjectRepository(Review)
+    private readonly reviewRepository: Repository<Review>,
   ) {}
 
   async runSeed() {
-    // 1. Limpieza total
     await this.deleteTables();
 
-    // 2. Inserción de Usuarios
     const users = await this.insertUsers();
-    const adminUser = users[0]; // Usamos el primer usuario como dueño por defecto
+    const adminUser = users[0];
 
-    // 3. Inserción de Categorías
     const categories = await this.insertCategories();
 
-    // 4. Inserción de Productos
-    await this.insertProducts(adminUser, categories);
+    const dbProducts = await this.insertProducts(adminUser, categories);
+
+    await this.insertReviews(users, dbProducts);
 
     return 'SEED EXECUTED SUCCESSFULLY';
   }
 
   private async deleteTables() {
-    // 1. Borramos lo más profundo (los que no tienen hijos)
-    // IMPORTANTE: Primero OrderItems porque depende de Orders y de Products
     await this.orderItemRepository
       .createQueryBuilder()
       .delete()
@@ -63,22 +63,24 @@ export class SeedService {
       .where({})
       .execute();
 
-    // 2. Ahora sí, las reviews e imágenes (que dependen de productos)
-    // await this.reviewRepository.createQueryBuilder().delete().where({}).execute();
+    await this.reviewRepository
+      .createQueryBuilder()
+      .delete()
+      .where({})
+      .execute();
+
     await this.productImageRepository
       .createQueryBuilder()
       .delete()
       .where({})
       .execute();
 
-    // 3. Borramos los productos
     await this.productRepository
       .createQueryBuilder()
       .delete()
       .where({})
       .execute();
 
-    // 4. Los padres finales
     await this.categoryRepository
       .createQueryBuilder()
       .delete()
@@ -127,6 +129,25 @@ export class SeedService {
       });
     });
 
-    await this.productRepository.save(productsToInsert);
+    return await this.productRepository.save(productsToInsert);
+  }
+
+  private async insertReviews(users: User[], products: Product[]) {
+    const reviewsInsert = initialData.reviews.map((seedReview) => {
+      const randomUser = users[Math.floor(Math.random() * users.length)];
+      const randomProduct =
+        products[Math.floor(Math.random() * products.length)];
+
+      // Creamos la instancia de la Review vinculando las instancias completas (TypeORM extrae el ID solo)
+      return this.reviewRepository.create({
+        rating: seedReview.rating,
+        comment: seedReview.comment,
+        createdAt: seedReview.created_at,
+        user: randomUser, // 👈 Relación ManyToOne
+        product: randomProduct, // 👈 Relación ManyToOne
+      });
+      // Guardamos las 50 reviews de un solo saque en la base de datos
+    });
+    await this.reviewRepository.save(reviewsInsert);
   }
 }
