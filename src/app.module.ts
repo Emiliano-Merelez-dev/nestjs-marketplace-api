@@ -22,6 +22,10 @@ import { SeedModule } from './seed/seed.module';
       password: process.env.DB_PASSWORD,
       autoLoadEntities: true,
       synchronize: true,
+      ssl:
+        process.env.DB_HOST !== 'localhost'
+          ? { rejectUnauthorized: false }
+          : false,
     }),
 
     ProductsModule,
