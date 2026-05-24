@@ -1,0 +1,16 @@
+{
+  "moduleFileExtensions": ["js", "json", "ts"],
+  "rootDir": ".",
+  "testEnvironment": "node",
+  "setupFiles": ["<rootDir>/setup-tests.ts"],
+  "testRegex": ".e2e-spec.ts$",
+  "transform": {
+    "^.+\\.(t|j)s$": "ts-jest"
+  },
+  "transformIgnorePatterns": ["/node_modules/(?!(uuid|pg|pg-pool)/)"],
+  "moduleNameMapper": {
+    "^uuid$": "uuid",
+    "^src/(.*)$": "<rootDir>/src/$1"
+  },
+  "coverageDirectory": "./coverage-e2e"
+}

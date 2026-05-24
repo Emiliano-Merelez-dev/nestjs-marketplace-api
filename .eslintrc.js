@@ -3,9 +3,10 @@ module.exports = {
   parserOptions: {
     projectService: {
       allowDefaultProject: [
-        'setuo-tests.ts',
+        './setuo-tests.ts',
         'test/*.ts',
         'test/E2E/products/*.ts',
+        'test/E2E/auth/*.ts',
         'test/products/*.ts',
         'test/auth/*.ts',
       ],

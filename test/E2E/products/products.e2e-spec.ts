@@ -6,6 +6,7 @@ import { AppModule } from '../../../src/app.module';
 
 describe('products (e2e)', () => {
   let app: INestApplication<App>;
+  let adminToken: string;
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -22,10 +23,21 @@ describe('products (e2e)', () => {
     );
 
     await app.init();
+
+    const loginResponse = await request(app.getHttpServer())
+      .post('/api/auth/login')
+      .send({
+        email: 'aubrey9@hotmail.com',
+        password: 'EJ1Z4FXPam6M',
+      });
+
+    adminToken = loginResponse.body.token;
   });
 
   it('/api/products (POST) - with no body ', async () => {
-    const response = await request(app.getHttpServer()).post('/api/products');
+    const response = await request(app.getHttpServer())
+      .post('/api/products')
+      .set('Authorization', `Bearer ${adminToken}`);
 
     const mostHaveErrorMessage = [
       'title must be longer than or equal to 1 characters',
@@ -47,6 +59,8 @@ describe('products (e2e)', () => {
   it('/api/products (POST) - with body valid', async () => {
     const response = await request(app.getHttpServer())
       .post('/api/products')
+      .set('Authorization', `Bearer ${adminToken}`)
+
       .send({
         title: 'Yoga Mat Pro Grip rtettrt-ndanfkenfkan-ncdkrskfvsr',
         price: 39.99,
@@ -57,11 +71,11 @@ describe('products (e2e)', () => {
         sizes: ['M'],
         gender: 'unisex',
         tags: ['fitness', 'yoga', 'mat', 'exercise'],
-        category: 'a334d174-9da7-4c2d-9ff7-0308b54bac31',
+        category: '085aa78b-5826-463e-a686-680cbc34ef08',
       });
 
-    if (response.statusCode === 201) {
-      console.log('DB ERROR:', response.body.message); // Esto te va a decir QUÉ no encontró
+    if (response.statusCode === 500) {
+      console.log('DB ERROR:', response.body.message);
     }
 
     expect(response.statusCode).toBe(400);
@@ -101,7 +115,7 @@ describe('products (e2e)', () => {
       `/api/products/${valid}`,
     );
 
-    console.log(response.body.message);
+    // console.log(response.body.message);
 
     expect(response.statusCode).toBe(404);
     expect(response.body.message).toEqual(
@@ -110,7 +124,7 @@ describe('products (e2e)', () => {
   });
 
   it('/api/products/:term (GET) get by slug/id/title - with body valid', async () => {
-    const valid = '0be294dc-916f-4067-9953-ea53c51f50e1';
+    const valid = '0b003455-2851-416e-84e5-641955195d78';
 
     const response = await request(app.getHttpServer()).get(
       `/api/products/${valid}`,
@@ -119,24 +133,26 @@ describe('products (e2e)', () => {
     expect(response.statusCode).toBe(200);
     expect(response.body).toEqual(
       expect.objectContaining({
-        id: '0be294dc-916f-4067-9953-ea53c51f50e1',
-        title: 'Car Emergency Roadside Kit',
-        price: expect.any(Number),
-        slug: expect.any(String),
-        // Cambiamos a validar un array de objetos para las imágenes
-        images: expect.arrayContaining([
-          expect.objectContaining({
-            url: expect.stringContaining('https'),
-          }),
-        ]),
-        // Ajustamos la estructura de category según el error
-        category: expect.objectContaining({
-          id: expect.any(String),
-          name_category: 'Automotive',
-        }),
-        user: expect.objectContaining({
-          email: 'burnice42@gmail.com',
-        }),
+        id: '0b003455-2851-416e-84e5-641955195d78',
+        title: 'SNES Classic Controller',
+        price: 150.56,
+        description:
+          'Ergonomic retro controller compatible with classic gaming systems.',
+        slug: 'snes-classic-controller',
+        stock: 95,
+        sizes: [],
+        gender: ['men'],
+        tags: ['retro', 'controller', 'gaming', 'snes'],
+        images: [
+          {
+            id: '4c1e6f19-f928-4b56-955a-17841c4e46bd',
+            url: 'https://picsum.photos/seed/snes-classic-controller/600/400',
+          },
+          {
+            id: '5887541d-1fa3-4267-a915-6323e8c10044',
+            url: 'https://picsum.photos/seed/snes-classic-controller-2/600/400',
+          },
+        ],
       }),
     );
   });
@@ -152,7 +168,7 @@ describe('products (e2e)', () => {
   });
 
   it('/api/products/:id (PATCH) by id valid', async () => {
-    const valid = '0be294dc-916f-4067-9953-ea53c51f50e1';
+    const valid = '0b003455-2851-416e-84e5-641955195d78';
 
     const updateData = {
       price: 150.56,
@@ -169,15 +185,15 @@ describe('products (e2e)', () => {
     if (Array.isArray(response.body.gender)) {
       expect(response.body.gender).toContain(updateData.gender);
     }
-    expect(response.body.title).toBe('Car Emergency Roadside Kit');
+    expect(response.body.title).toBe('SNES Classic Controller');
   });
 
   it('/api/products/:id (DELETE) with id not valid', async () => {
     const valid = 'Car Emergency Roadside Kit';
 
-    const response = await request(app.getHttpServer()).delete(
-      `/api/products/${valid}`,
-    );
+    const response = await request(app.getHttpServer())
+      .delete(`/api/products/${valid}`)
+      .set('Authorization', `Bearer ${adminToken}`);
 
     expect(response.statusCode).toBe(400);
   });
@@ -185,9 +201,9 @@ describe('products (e2e)', () => {
   it('/api/products/:id (DELETE) with id valid', async () => {
     const valid = '103e8076-c8f8-42b3-8c88-dfd8598edda8';
 
-    const response = await request(app.getHttpServer()).delete(
-      `/api/products/${valid}`,
-    );
+    const response = await request(app.getHttpServer())
+      .delete(`/api/products/${valid}`)
+      .set('Authorization', `Bearer ${adminToken}`);
 
     expect(response.statusCode).toBe(404);
     expect(response.body.message).toEqual(`Product with id ${valid} not found`);

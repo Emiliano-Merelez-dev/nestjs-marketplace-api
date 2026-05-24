@@ -117,7 +117,7 @@ describe('Auth register and login (e2e)', () => {
         password: 'Abc123456',
       });
 
-    console.log(response.body);
+    // console.log(response.body);
 
     expect(response.body).toEqual({
       id: expect.any(String),
