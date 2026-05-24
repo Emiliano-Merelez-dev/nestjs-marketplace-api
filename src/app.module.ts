@@ -27,10 +27,10 @@ import { SeedModule } from './seed/seed.module';
       database: process.env.DATABASE_URL ? undefined : process.env.DB_NAME,
       autoLoadEntities: true,
       synchronize: true,
-      ssl:
-        process.env.DB_HOST !== 'localhost'
-          ? { rejectUnauthorized: false }
-          : false,
+      ssl: process.env.DATABASE_URL ? { rejectUnauthorized: false } : false,
+      extra: {
+        family: 4,
+      },
     }),
 
     ProductsModule,
