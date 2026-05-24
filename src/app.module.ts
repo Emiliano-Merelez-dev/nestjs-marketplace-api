@@ -15,11 +15,16 @@ import { SeedModule } from './seed/seed.module';
 
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: process.env.DB_HOST,
-      port: +process.env.DB_PORT,
-      database: process.env.DB_NAME,
-      username: process.env.DB_USERNAME,
-      password: process.env.DB_PASSWORD,
+      url: process.env.DATABASE_URL,
+      host: process.env.DATABASE_URL ? undefined : process.env.DB_HOST,
+      port: process.env.DATABASE_URL
+        ? undefined
+        : process.env.DB_PORT
+          ? +process.env.DB_PORT
+          : 5432,
+      username: process.env.DATABASE_URL ? undefined : process.env.DB_USERNAME,
+      password: process.env.DATABASE_URL ? undefined : process.env.DB_PASSWORD,
+      database: process.env.DATABASE_URL ? undefined : process.env.DB_NAME,
       autoLoadEntities: true,
       synchronize: true,
       ssl:
