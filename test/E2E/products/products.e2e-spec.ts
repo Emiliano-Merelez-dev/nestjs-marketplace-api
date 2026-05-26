@@ -71,7 +71,7 @@ describe('products (e2e)', () => {
         sizes: ['M'],
         gender: 'unisex',
         tags: ['fitness', 'yoga', 'mat', 'exercise'],
-        category: '085aa78b-5826-463e-a686-680cbc34ef08',
+        category: '82c32c11-ee53-4eef-85a4-5a64df4474e9',
       });
 
     if (response.statusCode === 500) {
@@ -124,7 +124,7 @@ describe('products (e2e)', () => {
   });
 
   it('/api/products/:term (GET) get by slug/id/title - with body valid', async () => {
-    const valid = '0b003455-2851-416e-84e5-641955195d78';
+    const valid = '1a6114e7-c04f-4ea2-b168-077c31f22878';
 
     const response = await request(app.getHttpServer()).get(
       `/api/products/${valid}`,
@@ -133,26 +133,40 @@ describe('products (e2e)', () => {
     expect(response.statusCode).toBe(200);
     expect(response.body).toEqual(
       expect.objectContaining({
-        id: '0b003455-2851-416e-84e5-641955195d78',
-        title: 'SNES Classic Controller',
+        id: '1a6114e7-c04f-4ea2-b168-077c31f22878',
+        title: 'Retro Game Cartridge Cleaning Kit',
         price: 150.56,
         description:
-          'Ergonomic retro controller compatible with classic gaming systems.',
-        slug: 'snes-classic-controller',
-        stock: 95,
+          'Cleaning kit designed to maintain and restore retro game cartridges.',
+        slug: 'retro-game-cartridge-cleaning-kit',
+        stock: 85,
         sizes: [],
         gender: ['men'],
-        tags: ['retro', 'controller', 'gaming', 'snes'],
+        tags: ['retro', 'cleaning', 'gaming', 'maintenance'],
         images: [
           {
-            id: '4c1e6f19-f928-4b56-955a-17841c4e46bd',
-            url: 'https://picsum.photos/seed/snes-classic-controller/600/400',
+            id: '10d8b347-6111-4497-a09e-4035325e9700',
+            url: 'https://picsum.photos/seed/retro-game-cartridge-cleaning-kit/600/400',
           },
           {
-            id: '5887541d-1fa3-4267-a915-6323e8c10044',
-            url: 'https://picsum.photos/seed/snes-classic-controller-2/600/400',
+            id: '2a435c66-b23a-45c9-9c67-5447bb49777a',
+            url: 'https://picsum.photos/seed/retro-game-cartridge-cleaning-kit-2/600/400',
           },
         ],
+        user: {
+          id: '9221e322-13f7-4b8c-855d-964c496d6fdc',
+          email: 'superuser@google.com',
+          name: 'super user',
+          role: ['super-user'],
+          isActive: true,
+        },
+        category: {
+          id: '13f51e83-ab13-46c5-bf35-1a1695d98fed',
+          name_category: 'Retro Gaming',
+          slug: 'retro-gaming',
+          description:
+            'Classic gaming consoles, cartridges, and memorabilia for enthusiasts and collectors of vintage video game systems.',
+        },
       }),
     );
   });
@@ -168,7 +182,7 @@ describe('products (e2e)', () => {
   });
 
   it('/api/products/:id (PATCH) by id valid', async () => {
-    const valid = '0b003455-2851-416e-84e5-641955195d78';
+    const valid = '1a6114e7-c04f-4ea2-b168-077c31f22878';
 
     const updateData = {
       price: 150.56,
@@ -185,7 +199,7 @@ describe('products (e2e)', () => {
     if (Array.isArray(response.body.gender)) {
       expect(response.body.gender).toContain(updateData.gender);
     }
-    expect(response.body.title).toBe('SNES Classic Controller');
+    expect(response.body.title).toBe('Retro Game Cartridge Cleaning Kit');
   });
 
   it('/api/products/:id (DELETE) with id not valid', async () => {
