@@ -16,7 +16,7 @@ import { Auth, GetUser } from 'src/auth/decorators';
 import { User } from 'src/auth/entities/user.entity';
 import { ValidRoles } from 'src/auth/interfaces';
 import { PaginationDto } from 'src/common/dtos/pagination.dto';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Product } from './entities/product.entity';
 
 @ApiTags('Products')
@@ -25,6 +25,7 @@ export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @Post()
+  @ApiBearerAuth('JWT-auth')
   @Auth(ValidRoles.admin)
   @ApiResponse({
     status: 201,

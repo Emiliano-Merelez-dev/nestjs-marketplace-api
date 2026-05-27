@@ -38,7 +38,7 @@ export class AuthController {
     schema: {
       example: {
         token: 'eyJhbGciOiJIUzI1Ni...',
-        user: { email: 'otismarks@google.com' },
+        user: { email: 'inez_kilback70@gmail.com' },
       },
     },
   })

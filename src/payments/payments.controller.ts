@@ -1,12 +1,7 @@
 import { Controller, Post, Body } from '@nestjs/common';
 import { PaymentsService } from './payments.service';
 import { CreatePaymentDto } from './dto/create-payment.dto';
-import {
-  ApiBearerAuth,
-  ApiOperation,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Payments')
 @Controller('payments')
@@ -14,7 +9,6 @@ export class PaymentsController {
   constructor(private readonly paymentsService: PaymentsService) {}
 
   @Post('check')
-  @ApiBearerAuth()
   @ApiOperation({ summary: 'Verify a PayPal transaction' })
   @ApiResponse({
     status: 201,
