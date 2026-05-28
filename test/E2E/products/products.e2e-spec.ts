@@ -123,7 +123,7 @@ describe('products (e2e)', () => {
     );
   });
 
-  it('/api/products/:term (GET) get by slug/id/title - with body valid', async () => {
+  it('/api/products/:term (GET) get by slug/id/title - should return 200 with body valid', async () => {
     const valid = '1a6114e7-c04f-4ea2-b168-077c31f22878';
 
     const response = await request(app.getHttpServer()).get(
@@ -181,7 +181,7 @@ describe('products (e2e)', () => {
     expect(response.statusCode).toBe(400);
   });
 
-  it('/api/products/:id (PATCH) by id valid return 200', async () => {
+  it('/api/products/:id (PATCH) should return by id valid return 200', async () => {
     const valid = '1a6114e7-c04f-4ea2-b168-077c31f22878';
 
     const updateData = {
