@@ -181,7 +181,7 @@ describe('products (e2e)', () => {
     expect(response.statusCode).toBe(400);
   });
 
-  it('/api/products/:id (PATCH) should return by id valid return 200 in postman', async () => {
+  it('/api/products/:id (PATCH) should return by id valid return 200', async () => {
     const valid = '1a6114e7-c04f-4ea2-b168-077c31f22878';
 
     const updateData = {
