@@ -148,3 +148,19 @@ To run tests in watch mode during development:
 ```bash
 npm run test:e2e:watch
 ```
+
+## 📸 Project Preview & Validation
+
+The following captures demonstrate the infrastructure setup, database persistence, and automated test execution results:
+
+Infrastructure Docker:
+
+![Infrastructure Docker](./assets/docker.png)
+
+Database PostgreSQL:
+
+![Database (PostgreSQL)](./assets/postgredb.png)
+
+Quality Assurance (E2E Tests):
+
+![Quality Assurance (E2E Tests)](./assets/test-e2e.png)
